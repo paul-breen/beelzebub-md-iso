@@ -5,10 +5,9 @@ description = "Translate between mdJson and ISO19115-2"
 authors = ["Paul Breen <paul.breen6@btinternet.com>"]
 readme = "README.md"
 license = "Apache-2.0"
-repository = "https://github.com/paul-breen/beelzebub"
-homepage = "https://github.com/paul-breen/beelzebub"
-documentation = "https://raw.githubusercontent.com/paul-breen/beelzebub/main/README.md"
-
+repository = "https://github.com/paul-breen/beelzebub-md-iso"
+homepage = "https://github.com/paul-breen/beelzebub-md-iso"
+documentation = "https://raw.githubusercontent.com/paul-breen/beelzebub-md-iso/main/README.md"
 
 [tool.poetry.dependencies]
 python = "^3.6"

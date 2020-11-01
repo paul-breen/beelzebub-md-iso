@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "beelzebub-md-iso"
+version = "0.1.0"
+description = "Translate between mdJson and ISO19115-2"
+authors = ["Paul Breen <paul.breen6@btinternet.com>"]
+readme = "README.md"
+license = "Apache-2.0"
+repository = "https://github.com/paul-breen/beelzebub"
+homepage = "https://github.com/paul-breen/beelzebub"
+documentation = "https://raw.githubusercontent.com/paul-breen/beelzebub/main/README.md"
+
+
+[tool.poetry.dependencies]
+python = "^3.6"
+beelzebub = "^0.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.1.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

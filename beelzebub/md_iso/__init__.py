@@ -1,5 +1,5 @@
 ###############################################################################
-# Project: md_iso_x
+# Project: md_iso
 # Purpose: Classes to manage transformation between mdJson and ISO19115-2
 # Author:  Paul M. Breen
 # Date:    2020-10-01

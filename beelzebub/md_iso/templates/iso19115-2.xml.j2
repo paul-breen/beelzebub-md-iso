@@ -107,63 +107,7 @@
       </gmd:MD_ReferenceSystem>
    </gmd:referenceSystemInfo>
    {% endfor %}
-   <gmd:metadataExtensionInfo>
-      <gmd:MD_MetadataExtensionInformation>
-         <gmd:extensionOnLineResource/>
-         <gmd:extendedElementInformation>
-            <gmd:MD_ExtendedElementInformation>
-               <gmd:name>
-                  <gco:CharacterString>Taxonomy System</gco:CharacterString>
-               </gmd:name>
-               <gmd:shortName>
-                  <gco:CharacterString>TaxonSys</gco:CharacterString>
-               </gmd:shortName>
-               <gmd:definition>
-                  <gco:CharacterString>Documentation of taxonomic sources, procedures, and treatments</gco:CharacterString>
-               </gmd:definition>
-               <gmd:obligation>
-                  <gmd:MD_ObligationCode>optional</gmd:MD_ObligationCode>
-               </gmd:obligation>
-               <gmd:dataType>
-                  <gmd:MD_DatatypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_DatatypeCode" codeListValue="class" codeSpace="001"/>
-               </gmd:dataType>
-               <gmd:maximumOccurrence>
-                  <gco:CharacterString>1</gco:CharacterString>
-               </gmd:maximumOccurrence>
-               <gmd:parentEntity>
-                  <gco:CharacterString>MD_Identification</gco:CharacterString>
-               </gmd:parentEntity>
-               <gmd:rule>
-                  <gco:CharacterString>New Metadata section as a class to MD_Identification</gco:CharacterString>
-               </gmd:rule>
-               <gmd:rationale>
-                  <gco:CharacterString>The set of data elements contained within this class element represents an attempt to provide better documentation of taxonomic sources, procedures, and treatments.</gco:CharacterString>
-               </gmd:rationale>
-               <gmd:source>
-                  <gmd:CI_ResponsibleParty>
-                     <gmd:organisationName>
-                        <gco:CharacterString>National Biological Information Infrastructure</gco:CharacterString>
-                     </gmd:organisationName>
-                     <gmd:contactInfo>
-                        <gmd:CI_Contact>
-                           <gmd:onlineResource>
-                              <gmd:CI_OnlineResource>
-                                 <gmd:linkage>
-                                    <gmd:URL>https://www2.usgs.gov/core_science_systems/Access/p1111-1.html</gmd:URL>
-                                 </gmd:linkage>
-                              </gmd:CI_OnlineResource>
-                           </gmd:onlineResource>
-                        </gmd:CI_Contact>
-                     </gmd:contactInfo>
-                     <gmd:role>
-                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="author" codeSpace="011"/>
-                     </gmd:role>
-                  </gmd:CI_ResponsibleParty>
-               </gmd:source>
-            </gmd:MD_ExtendedElementInformation>
-         </gmd:extendedElementInformation>
-      </gmd:MD_MetadataExtensionInformation>
-   </gmd:metadataExtensionInfo>
+   <gmd:metadataExtensionInfo/>
    <gmd:identificationInfo>
       <gmd:MD_DataIdentification>
          <gmd:citation>
@@ -172,55 +116,80 @@
                   <gco:CharacterString>{{ metadata.resourceInfo.citation.title }}</gco:CharacterString>
                </gmd:title>
                <gmd:alternateTitle/>
+               {% for date in metadata.resourceInfo.citation.date %}
                <gmd:date>
                   <gmd:CI_Date>
                      <gmd:date>
-                        <gco:DateTime>2020-05-06T23:00:00.487+00:00</gco:DateTime>
+                        <gco:DateTime>{{ date.date }}</gco:DateTime>
                      </gmd:date>
                      <gmd:dateType>
-                        <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="publication" codeSpace="002"/>
+                        <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="002"/>
                      </gmd:dateType>
                   </gmd:CI_Date>
                </gmd:date>
+               {% endfor %}
                <gmd:edition>
-                  <gco:CharacterString>1.0</gco:CharacterString>
+                  <gco:CharacterString>{{ metadata.resourceInfo.citation.edition }}</gco:CharacterString>
                </gmd:edition>
+               {% for identifier in metadata.resourceInfo.citation.identifier %}
                <gmd:identifier>
                   <gmd:MD_Identifier>
                      <gmd:authority/>
                      <gmd:code>
-                        <gco:CharacterString>10.5285/01f26c07-ea6c-4d89-893e-d86247874e78</gco:CharacterString>
+                        <gco:CharacterString>{{ identifier.identifier }}</gco:CharacterString>
                      </gmd:code>
                   </gmd:MD_Identifier>
                </gmd:identifier>
+               {% endfor %}
+               {% for responsibleParty in metadata.resourceInfo.citation.responsibleParty %}
+               {% for party in responsibleParty.party %}
+               {% for lookup in contact %}
+               {% if lookup.contactId == party.contactId %}
                <gmd:citedResponsibleParty>
                   <gmd:CI_ResponsibleParty>
+                     {% if lookup.isOrganization %}
                      <gmd:organisationName>
-                        <gco:CharacterString>UK Polar Data Centre</gco:CharacterString>
+                        <gco:CharacterString>{{ lookup.name }}</gco:CharacterString>
                      </gmd:organisationName>
+                     {% elif not lookup.isOrganization %}
+                     <gmd:individualName>
+                        <gco:CharacterString>{{ lookup.name }}</gco:CharacterString>
+                     </gmd:individualName>
+                     <gmd:positionName>
+                        <gco:CharacterString>{{ lookup.positionName }}</gco:CharacterString>
+                     </gmd:positionName>
+                     {% endif %}
                      <gmd:contactInfo>
                         <gmd:CI_Contact>
                            <gmd:phone/>
+                           {% for email in lookup.electronicMailAddress %}
                            <gmd:address>
                               <gmd:CI_Address>
                                  <gmd:electronicMailAddress>
-                                    <gco:CharacterString>polardatacentre@bas.ac.uk</gco:CharacterString>
+                                    <gco:CharacterString>{{ email }}</gco:CharacterString>
                                  </gmd:electronicMailAddress>
                               </gmd:CI_Address>
                            </gmd:address>
+                           {% endfor %}
                            <gmd:onlineResource/>
                            <gmd:hoursOfService/>
                            <gmd:contactInstructions/>
                         </gmd:CI_Contact>
                      </gmd:contactInfo>
                      <gmd:role>
-                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="publisher" codeSpace="010"/>
+                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ responsibleParty.role }}" codeSpace="010"/>
                      </gmd:role>
                   </gmd:CI_ResponsibleParty>
                </gmd:citedResponsibleParty>
+               {% endif %}
+               {% endfor %}
+               {% endfor %}
+               {% endfor %}
+               {% for presentationForm in metadata.resourceInfo.citation.presentationForm %}
                <gmd:presentationForm>
-                  <gmd:CI_PresentationFormCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_PresentationFormCode" codeListValue="tableDigital" codeSpace="011"/>
+                  <gmd:CI_PresentationFormCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_PresentationFormCode" codeListValue="{{ presentationForm }}" codeSpace="011"/>
                </gmd:presentationForm>
+               {% endfor %}
                <gmd:series/>
                <gmd:otherCitationDetails/>
                <gmd:ISBN/>
@@ -228,113 +197,104 @@
             </gmd:CI_Citation>
          </gmd:citation>
          <gmd:abstract>
-            <gco:CharacterString>Point data measurements of ice surface, ice base and lake bed elevation are given from *Subglacial Lake Ellsworth* (**SLE**), West Antarctica. The data were acquired during the austral summer of 2007-2008. Five seismic reflection lines were acquired over SLE, with surface elevation determined by dual frequency GPS.</gco:CharacterString>
+            <gco:CharacterString>{{ metadata.resourceInfo.abstract }}</gco:CharacterString>
          </gmd:abstract>
          <gmd:purpose/>
          <gmd:credit/>
+         {% for status in metadata.resourceInfo.status %}
          <gmd:status>
-            <gmd:MD_ProgressCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ProgressCode" codeListValue="completed" codeSpace="001"/>
+            <gmd:MD_ProgressCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ProgressCode" codeListValue="{{ status }}" codeSpace="001"/>
          </gmd:status>
+         {% endfor %}
+         {% for pointOfContact in metadata.resourceInfo.pointOfContact %}
+         {% for party in pointOfContact.party %}
+         {% for lookup in contact %}
+         {% if lookup.contactId == party.contactId %}
          <gmd:pointOfContact>
             <gmd:CI_ResponsibleParty>
+               {% if lookup.isOrganization %}
+               <gmd:organisationName>
+                  <gco:CharacterString>{{ lookup.name }}</gco:CharacterString>
+               </gmd:organisationName>
+               {% elif not lookup.isOrganization %}
                <gmd:individualName>
-                  <gco:CharacterString>Smith, Andrew</gco:CharacterString>
+                  <gco:CharacterString>{{ lookup.name }}</gco:CharacterString>
                </gmd:individualName>
                <gmd:positionName>
-                  <gco:CharacterString>Science Leader</gco:CharacterString>
+                  <gco:CharacterString>{{ lookup.positionName }}</gco:CharacterString>
                </gmd:positionName>
+               {% endif %}
                <gmd:contactInfo>
                   <gmd:CI_Contact>
                      <gmd:phone/>
+                     {% for email in lookup.electronicMailAddress %}
                      <gmd:address>
                         <gmd:CI_Address>
                            <gmd:electronicMailAddress>
-                              <gco:CharacterString>amsm@bas.ac.uk</gco:CharacterString>
+                              <gco:CharacterString>{{ email }}</gco:CharacterString>
                            </gmd:electronicMailAddress>
                         </gmd:CI_Address>
                      </gmd:address>
+                     {% endfor %}
                      <gmd:onlineResource/>
                      <gmd:hoursOfService/>
                      <gmd:contactInstructions/>
                   </gmd:CI_Contact>
                </gmd:contactInfo>
                <gmd:role>
-                  <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="pointOfContact" codeSpace="007"/>
+                  <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ pointOfContact.role }}" codeSpace="007"/>
                </gmd:role>
             </gmd:CI_ResponsibleParty>
          </gmd:pointOfContact>
-         <gmd:pointOfContact>
-            <gmd:CI_ResponsibleParty>
-               <gmd:individualName>
-                  <gco:CharacterString>Smith, Andrew</gco:CharacterString>
-               </gmd:individualName>
-               <gmd:positionName>
-                  <gco:CharacterString>Science Leader</gco:CharacterString>
-               </gmd:positionName>
-               <gmd:contactInfo>
-                  <gmd:CI_Contact>
-                     <gmd:phone/>
-                     <gmd:address>
-                        <gmd:CI_Address>
-                           <gmd:electronicMailAddress>
-                              <gco:CharacterString>amsm@bas.ac.uk</gco:CharacterString>
-                           </gmd:electronicMailAddress>
-                        </gmd:CI_Address>
-                     </gmd:address>
-                     <gmd:onlineResource/>
-                     <gmd:hoursOfService/>
-                     <gmd:contactInstructions/>
-                  </gmd:CI_Contact>
-               </gmd:contactInfo>
-               <gmd:role>
-                  <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="author" codeSpace="011"/>
-               </gmd:role>
-            </gmd:CI_ResponsibleParty>
-         </gmd:pointOfContact>
+         {% endif %}
+         {% endfor %}
+         {% endfor %}
+         {% endfor %}
          <gmd:resourceMaintenance/>
          <gmd:graphicOverview/>
          <gmd:resourceFormat/>
+         {% for keywordSet in metadata.resourceInfo.keyword %}
          <gmd:descriptiveKeywords>
             <gmd:MD_Keywords>
+               {% for keyword in keywordSet.keyword %}
                <gmd:keyword>
-                  <gco:CharacterString>elevation</gco:CharacterString>
+                  <gco:CharacterString>{{ keyword.keyword }}</gco:CharacterString>
                </gmd:keyword>
-               <gmd:keyword>
-                  <gco:CharacterString>environment</gco:CharacterString>
-               </gmd:keyword>
-               <gmd:keyword>
-                  <gco:CharacterString>geoscientificInformation</gco:CharacterString>
-               </gmd:keyword>
+               {% endfor %}
                <gmd:type>
-                  <gmd:MD_KeywordTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_KeywordTypeCode" codeListValue="isoTopicCategory" codeSpace="adiwg002"/>
+                  <gmd:MD_KeywordTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_KeywordTypeCode" codeListValue="{{ keywordSet.keywordType }}" codeSpace="adiwg002"/>
                </gmd:type>
                <gmd:thesaurusName>
                   <gmd:CI_Citation>
                      <gmd:title>
-                        <gco:CharacterString>ISO 19115 Topic Category</gco:CharacterString>
+                        <gco:CharacterString>{{ keywordSet.thesaurus.title }}</gco:CharacterString>
                      </gmd:title>
                      <gmd:alternateTitle/>
+                     {% for date in keywordSet.thesaurus.date %}
                      <gmd:date>
                         <gmd:CI_Date>
                            <gmd:date>
-                              <gco:Date>2014-04</gco:Date>
+                              <gco:Date>{{ date.date }}</gco:Date>
                            </gmd:date>
                            <gmd:dateType>
-                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="revision" codeSpace="003"/>
+                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="003"/>
                            </gmd:dateType>
                         </gmd:CI_Date>
                      </gmd:date>
+                     {% endfor %}
                      <gmd:edition>
-                        <gco:CharacterString>ISO 19115-1:2014</gco:CharacterString>
+                        <gco:CharacterString>{{ keywordSet.thesaurus.edition }}</gco:CharacterString>
                      </gmd:edition>
+                     {% for identifier in keywordSet.thesaurus.identifier %}
                      <gmd:identifier>
                         <gmd:MD_Identifier>
                            <gmd:authority/>
                            <gmd:code>
-                              <gco:CharacterString>ISO 19115 Topic Category</gco:CharacterString>
+                              <gco:CharacterString>{{ identifier.identifier }}</gco:CharacterString>
                            </gmd:code>
                         </gmd:MD_Identifier>
                      </gmd:identifier>
+                     {% endfor %}
                      <gmd:citedResponsibleParty/>
                      <gmd:presentationForm/>
                      <gmd:series/>
@@ -345,156 +305,104 @@
                </gmd:thesaurusName>
             </gmd:MD_Keywords>
          </gmd:descriptiveKeywords>
-         <gmd:descriptiveKeywords>
-            <gmd:MD_Keywords>
-               <gmd:keyword>
-                  <gco:CharacterString>GLACIER ELEVATION/ICE SHEET ELEVATION</gco:CharacterString>
-               </gmd:keyword>
-               <gmd:keyword>
-                  <gco:CharacterString>GLACIER ELEVATION/ICE SHEET ELEVATION</gco:CharacterString>
-               </gmd:keyword>
-               <gmd:keyword>
-                  <gco:CharacterString>GLACIER ELEVATION/ICE SHEET ELEVATION</gco:CharacterString>
-               </gmd:keyword>
-               <gmd:keyword>
-                  <gco:CharacterString>GLACIER MOTION/ICE SHEET MOTION</gco:CharacterString>
-               </gmd:keyword>
-               <gmd:keyword>
-                  <gco:CharacterString>GLACIER MOTION/ICE SHEET MOTION</gco:CharacterString>
-               </gmd:keyword>
-               <gmd:keyword>
-                  <gco:CharacterString>GLACIER MOTION/ICE SHEET MOTION</gco:CharacterString>
-               </gmd:keyword>
-               <gmd:type>
-                  <gmd:MD_KeywordTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="005"/>
-               </gmd:type>
-               <gmd:thesaurusName>
-                  <gmd:CI_Citation>
-                     <gmd:title>
-                        <gco:CharacterString>Global Change Master Directory (GCMD) Science Keywords</gco:CharacterString>
-                     </gmd:title>
-                     <gmd:alternateTitle/>
-                     <gmd:date>
-                        <gmd:CI_Date>
-                           <gmd:date>
-                              <gco:Date>2018-12-12</gco:Date>
-                           </gmd:date>
-                           <gmd:dateType>
-                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="revision" codeSpace="003"/>
-                           </gmd:dateType>
-                        </gmd:CI_Date>
-                     </gmd:date>
-                     <gmd:edition>
-                        <gco:CharacterString>Version 8.6</gco:CharacterString>
-                     </gmd:edition>
-                     <gmd:identifier>
-                        <gmd:MD_Identifier>
-                           <gmd:authority/>
-                           <gmd:code>
-                              <gco:CharacterString>1eb0ea0a-312c-4d74-8d42-6f1ad758f999</gco:CharacterString>
-                           </gmd:code>
-                        </gmd:MD_Identifier>
-                     </gmd:identifier>
-                     <gmd:citedResponsibleParty/>
-                     <gmd:presentationForm/>
-                     <gmd:series/>
-                     <gmd:otherCitationDetails/>
-                     <gmd:ISBN/>
-                     <gmd:ISSN/>
-                  </gmd:CI_Citation>
-               </gmd:thesaurusName>
-            </gmd:MD_Keywords>
-         </gmd:descriptiveKeywords>
+         {% endfor %}
          <gmd:resourceSpecificUsage/>
+         {% for constraint in metadata.resourceInfo.constraint %}
+         {% if constraint.type == "use" %}
+         {% for useLimitation in constraint.useLimitation %}
          <gmd:resourceConstraints>
             <gmd:MD_Constraints>
                <gmd:useLimitation>
-                  <gco:CharacterString>These data are governed by the NERC data policy http://www.nerc.ac.uk/research/sites/data/policy/ and supplied under Open Government Licence v3.0 http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/.</gco:CharacterString>
+                  <gco:CharacterString>{{ useLimitation }}</gco:CharacterString>
                </gmd:useLimitation>
             </gmd:MD_Constraints>
          </gmd:resourceConstraints>
+         {% endfor %}
+         {% endif %}
+         {% endfor %}
+         {% for associatedResource in metadata.associatedResource %}
          <gmd:aggregationInfo>
             <gmd:MD_AggregateInformation>
                <gmd:aggregateDataSetName>
                   <gmd:CI_Citation>
                      <gmd:title>
-                        <gco:CharacterString>Calving data from a lacustrine margin of Russell Glacier, west Greenland between July 2014 and September 2015</gco:CharacterString>
+                        <gco:CharacterString>{{ associatedResource.resourceCitation.title }}</gco:CharacterString>
                      </gmd:title>
                      <gmd:alternateTitle/>
+                     {% for date in associatedResource.resourceCitation.date %}
                      <gmd:date>
                         <gmd:CI_Date>
                            <gmd:date>
-                              <gco:Date>2020-03-27</gco:Date>
+                              <gco:Date>{{ date.date }}</gco:Date>
                            </gmd:date>
                            <gmd:dateType>
-                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="publication" codeSpace="002"/>
+                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="002"/>
                            </gmd:dateType>
                         </gmd:CI_Date>
                      </gmd:date>
+                     {% endfor %}
                      <gmd:edition>
-                        <gco:CharacterString>1.0</gco:CharacterString>
+                        <gco:CharacterString>{{ associatedResource.resourceCitation.edition }}</gco:CharacterString>
                      </gmd:edition>
+                     {% for identifier in associatedResource.resourceCitation.identifier %}
                      <gmd:identifier>
                         <gmd:MD_Identifier>
                            <gmd:authority/>
                            <gmd:code>
-                              <gco:CharacterString>10.5285/5cc71534-7f97-4974-8271-d407f1188e2f</gco:CharacterString>
+                              <gco:CharacterString>{{ identifier.identifier }}</gco:CharacterString>
                            </gmd:code>
                         </gmd:MD_Identifier>
                      </gmd:identifier>
+                     {% endfor %}
+                     {% for responsibleParty in associatedResource.resourceCitation.responsibleParty %}
+                     {% for party in responsibleParty.party %}
+                     {% for lookup in contact %}
+                     {% if lookup.contactId == party.contactId %}
                      <gmd:citedResponsibleParty>
                         <gmd:CI_ResponsibleParty>
+                           {% if lookup.isOrganization %}
                            <gmd:organisationName>
-                              <gco:CharacterString>UK Polar Data Centre</gco:CharacterString>
+                              <gco:CharacterString>{{ lookup.name }}</gco:CharacterString>
                            </gmd:organisationName>
+                           {% elif not lookup.isOrganization %}
+                           <gmd:individualName>
+                              <gco:CharacterString>{{ lookup.name }}</gco:CharacterString>
+                           </gmd:individualName>
+                           <gmd:positionName>
+                              <gco:CharacterString>{{ lookup.positionName }}</gco:CharacterString>
+                           </gmd:positionName>
+                           {% endif %}
                            <gmd:contactInfo>
                               <gmd:CI_Contact>
                                  <gmd:phone/>
+                                 {% for email in lookup.electronicMailAddress %}
                                  <gmd:address>
                                     <gmd:CI_Address>
                                        <gmd:electronicMailAddress>
-                                          <gco:CharacterString>polardatacentre@bas.ac.uk</gco:CharacterString>
+                                          <gco:CharacterString>{{ email }}</gco:CharacterString>
                                        </gmd:electronicMailAddress>
                                     </gmd:CI_Address>
                                  </gmd:address>
+                                 {% endfor %}
                                  <gmd:onlineResource/>
                                  <gmd:hoursOfService/>
                                  <gmd:contactInstructions/>
                               </gmd:CI_Contact>
                            </gmd:contactInfo>
                            <gmd:role>
-                              <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="originator" codeSpace="006"/>
+                              <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ responsibleParty.role }}" codeSpace="010"/>
                            </gmd:role>
                         </gmd:CI_ResponsibleParty>
                      </gmd:citedResponsibleParty>
-                     <gmd:citedResponsibleParty>
-                        <gmd:CI_ResponsibleParty>
-                           <gmd:organisationName>
-                              <gco:CharacterString>UK Polar Data Centre</gco:CharacterString>
-                           </gmd:organisationName>
-                           <gmd:contactInfo>
-                              <gmd:CI_Contact>
-                                 <gmd:phone/>
-                                 <gmd:address>
-                                    <gmd:CI_Address>
-                                       <gmd:electronicMailAddress>
-                                          <gco:CharacterString>polardatacentre@bas.ac.uk</gco:CharacterString>
-                                       </gmd:electronicMailAddress>
-                                    </gmd:CI_Address>
-                                 </gmd:address>
-                                 <gmd:onlineResource/>
-                                 <gmd:hoursOfService/>
-                                 <gmd:contactInstructions/>
-                              </gmd:CI_Contact>
-                           </gmd:contactInfo>
-                           <gmd:role>
-                              <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="publisher" codeSpace="010"/>
-                           </gmd:role>
-                        </gmd:CI_ResponsibleParty>
-                     </gmd:citedResponsibleParty>
+                     {% endif %}
+                     {% endfor %}
+                     {% endfor %}
+                     {% endfor %}
+                     {% for presentationForm in associatedResource.resourceCitation.presentationForm %}
                      <gmd:presentationForm>
-                        <gmd:CI_PresentationFormCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_PresentationFormCode" codeListValue="tableDigital" codeSpace="011"/>
+                        <gmd:CI_PresentationFormCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_PresentationFormCode" codeListValue="{{ presentationForm }}" codeSpace="011"/>
                      </gmd:presentationForm>
+                     {% endfor %}
                      <gmd:series/>
                      <gmd:otherCitationDetails/>
                      <gmd:ISBN/>
@@ -502,149 +410,71 @@
                   </gmd:CI_Citation>
                </gmd:aggregateDataSetName>
                <gmd:associationType>
-                  <gmd:DS_AssociationTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#DS_AssociationTypeCode" codeListValue="crossReference" codeSpace="001"/>
+                  <gmd:DS_AssociationTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#DS_AssociationTypeCode" codeListValue="{{ associatedResource.associationType }}" codeSpace="001"/>
                </gmd:associationType>
                <gmd:initiativeType>
-                  <gmd:DS_InitiativeTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#DS_InitiativeTypeCode" codeListValue="investigation" codeSpace="005"/>
+                  <gmd:DS_InitiativeTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#DS_InitiativeTypeCode" codeListValue="{{ associatedResource.initiativeType }}" codeSpace="005"/>
                </gmd:initiativeType>
             </gmd:MD_AggregateInformation>
          </gmd:aggregationInfo>
-         <gmd:aggregationInfo>
-            <gmd:MD_AggregateInformation>
-               <gmd:aggregateDataSetName>
-                  <gmd:CI_Citation>
-                     <gmd:title>
-                        <gco:CharacterString>Project Page for SLE</gco:CharacterString>
-                     </gmd:title>
-                     <gmd:alternateTitle/>
-                     <gmd:date>
-                        <gmd:CI_Date>
-                           <gmd:date>
-                              <gco:DateTime>2020-05-17T23:00:00.000+00:00</gco:DateTime>
-                           </gmd:date>
-                           <gmd:dateType>
-                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="publication" codeSpace="002"/>
-                           </gmd:dateType>
-                        </gmd:CI_Date>
-                     </gmd:date>
-                     <gmd:edition/>
-                     <gmd:identifier/>
-                     <gmd:citedResponsibleParty/>
-                     <gmd:presentationForm>
-                        <gmd:CI_PresentationFormCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_PresentationFormCode" codeListValue="webSite" codeSpace="adiwg001"/>
-                     </gmd:presentationForm>
-                     <gmd:series/>
-                     <gmd:otherCitationDetails/>
-                     <gmd:ISBN/>
-                     <gmd:ISSN/>
-                  </gmd:CI_Citation>
-               </gmd:aggregateDataSetName>
-               <gmd:associationType>
-                  <gmd:DS_AssociationTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#DS_AssociationTypeCode" codeListValue="parentProject" codeSpace="adiwg008"/>
-               </gmd:associationType>
-               <gmd:initiativeType>
-                  <gmd:DS_InitiativeTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#DS_InitiativeTypeCode" codeListValue="investigation" codeSpace="005"/>
-               </gmd:initiativeType>
-            </gmd:MD_AggregateInformation>
-         </gmd:aggregationInfo>
-         <gmd:aggregationInfo>
-            <gmd:MD_AggregateInformation>
-               <gmd:aggregateDataSetName>
-                  <gmd:CI_Citation>
-                     <gmd:title>
-                        <gco:CharacterString>Location for direct access to subglacial Lake Ellsworth: An assessment of geophysical data and modelling.</gco:CharacterString>
-                     </gmd:title>
-                     <gmd:alternateTitle/>
-                     <gmd:date>
-                        <gmd:CI_Date>
-                           <gmd:date>
-                              <gco:DateTime>2010-06-01T23:00:00.000+00:00</gco:DateTime>
-                           </gmd:date>
-                           <gmd:dateType>
-                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="publication" codeSpace="002"/>
-                           </gmd:dateType>
-                        </gmd:CI_Date>
-                     </gmd:date>
-                     <gmd:edition>
-                        <gco:CharacterString>1.0</gco:CharacterString>
-                     </gmd:edition>
-                     <gmd:identifier>
-                        <gmd:MD_Identifier>
-                           <gmd:authority/>
-                           <gmd:code>
-                              <gco:CharacterString>10.1029/2010GL042884</gco:CharacterString>
-                           </gmd:code>
-                        </gmd:MD_Identifier>
-                     </gmd:identifier>
-                     <gmd:citedResponsibleParty/>
-                     <gmd:presentationForm>
-                        <gmd:CI_PresentationFormCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_PresentationFormCode" codeListValue="documentDigital" codeSpace="001"/>
-                     </gmd:presentationForm>
-                     <gmd:series/>
-                     <gmd:otherCitationDetails/>
-                     <gmd:ISBN/>
-                     <gmd:ISSN/>
-                  </gmd:CI_Citation>
-               </gmd:aggregateDataSetName>
-               <gmd:associationType>
-                  <gmd:DS_AssociationTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#DS_AssociationTypeCode" codeListValue="largerWorkCitation" codeSpace="002"/>
-               </gmd:associationType>
-               <gmd:initiativeType>
-                  <gmd:DS_InitiativeTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#DS_InitiativeTypeCode" codeListValue="investigation" codeSpace="005"/>
-               </gmd:initiativeType>
-            </gmd:MD_AggregateInformation>
-         </gmd:aggregationInfo>
+         {% endfor %}
          <gmd:taxonomy/>
+         {% for spatialRepresentationType in metadata.resourceInfo.spatialRepresentationType %}
          <gmd:spatialRepresentationType>
-            <gmd:MD_SpatialRepresentationTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_SpatialRepresentationTypeCode" codeListValue="coordinate" codeSpace="adiwg001"/>
+            <gmd:MD_SpatialRepresentationTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_SpatialRepresentationTypeCode" codeListValue="{{ spatialRepresentationType }}" codeSpace="adiwg001"/>
          </gmd:spatialRepresentationType>
+         {% endfor %}
          <gmd:spatialResolution/>
          <gmd:language>
-            <gco:CharacterString>eng; GBR</gco:CharacterString>
+            <gco:CharacterString>{{ metadata.resourceInfo.defaultResourceLocale.language }}; {{ metadata.resourceInfo.defaultResourceLocale.country }}</gco:CharacterString>
          </gmd:language>
          <gmd:characterSet>
-            <gmd:MD_CharacterSetCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_CharacterSetCode" codeListValue="UTF-8" codeSpace="106"/>
+            <gmd:MD_CharacterSetCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_CharacterSetCode" codeListValue="{{ metadata.resourceInfo.defaultResourceLocale.characterSet }}" codeSpace="106"/>
          </gmd:characterSet>
+         {% for keywordSet in metadata.resourceInfo.keyword %}
+         {% if keywordSet.keywordType == "isoTopicCategory" %}
+         {% for keyword in keywordSet.keyword %}
          <gmd:topicCategory>
-            <gmd:MD_TopicCategoryCode>elevation</gmd:MD_TopicCategoryCode>
+            <gmd:MD_TopicCategoryCode>{{ keyword.keyword }}</gmd:MD_TopicCategoryCode>
          </gmd:topicCategory>
-         <gmd:topicCategory>
-            <gmd:MD_TopicCategoryCode>environment</gmd:MD_TopicCategoryCode>
-         </gmd:topicCategory>
-         <gmd:topicCategory>
-            <gmd:MD_TopicCategoryCode>geoscientificInformation</gmd:MD_TopicCategoryCode>
-         </gmd:topicCategory>
+         {% endfor %}
+         {% endif %}
+         {% endfor %}
          <gmd:environmentDescription>
-            <gco:CharacterString>Seismic data were acquired with Geometrics Geode seismographs; data processing and picking were done with Landmark ProMAX.</gco:CharacterString>
+            <gco:CharacterString>{{ metadata.resourceInfo.environmentDescription }}</gco:CharacterString>
          </gmd:environmentDescription>
+         {% for extent in metadata.resourceInfo.extent %}
          <gmd:extent>
             <gmd:EX_Extent>
                <gmd:description>
-                  <gco:CharacterString>Ellsworth Subglacial Lake (better known as Subglacial Lake Ellsworth)</gco:CharacterString>
+                  <gco:CharacterString>{{ extent.description }}</gco:CharacterString>
                </gmd:description>
+               {% for geographicExtent in extent.geographicExtent %}
                <gmd:geographicElement>
                   <gmd:EX_GeographicBoundingBox>
                      <gmd:extentTypeCode>
-                        <gco:Boolean>true</gco:Boolean>
+                        <gco:Boolean>{{ geographicExtent.containsData }}</gco:Boolean>
                      </gmd:extentTypeCode>
                      <gmd:westBoundLongitude>
-                        <gco:Decimal>-91</gco:Decimal>
+                        <gco:Decimal>{{ geographicExtent.boundingBox.westLongitude }}</gco:Decimal>
                      </gmd:westBoundLongitude>
                      <gmd:eastBoundLongitude>
-                        <gco:Decimal>-90</gco:Decimal>
+                        <gco:Decimal>{{ geographicExtent.boundingBox.eastLongitude }}</gco:Decimal>
                      </gmd:eastBoundLongitude>
                      <gmd:southBoundLatitude>
-                        <gco:Decimal>-79.1</gco:Decimal>
+                        <gco:Decimal>{{ geographicExtent.boundingBox.southLatitude }}</gco:Decimal>
                      </gmd:southBoundLatitude>
                      <gmd:northBoundLatitude>
-                        <gco:Decimal>-78.8</gco:Decimal>
+                        <gco:Decimal>{{ geographicExtent.boundingBox.northLatitude }}</gco:Decimal>
                      </gmd:northBoundLatitude>
                   </gmd:EX_GeographicBoundingBox>
                </gmd:geographicElement>
+               {% endfor %}
                <gmd:temporalElement/>
                <gmd:verticalElement/>
             </gmd:EX_Extent>
          </gmd:extent>
+         {% endfor %}
          <gmd:extent>
             <gmd:EX_Extent>
                <gmd:description/>
@@ -656,8 +486,8 @@
                            <gml:description/>
                            <gml:identifier codeSpace=""/>
                            <gml:name/>
-                           <gml:beginPosition>2007-11-01T00:00:00.000+00:00</gml:beginPosition>
-                           <gml:endPosition>2008-02-29T00:00:00.000+00:00</gml:endPosition>
+                           <gml:beginPosition>{{ metadata.resourceInfo.timePeriod.startDateTime }}</gml:beginPosition>
+                           <gml:endPosition>{{ metadata.resourceInfo.timePeriod.endDateTime }}</gml:endPosition>
                         </gml:TimePeriod>
                      </gmd:extent>
                   </gmd:EX_TemporalExtent>
@@ -669,87 +499,115 @@
       </gmd:MD_DataIdentification>
    </gmd:identificationInfo>
    <gmd:contentInfo/>
+   {% for resourceDistribution in metadata.resourceDistribution %}
+   {% for distributor in resourceDistribution.distributor %}
    <gmd:distributionInfo>
       <gmd:MD_Distribution>
          <gmd:distributor>
             <gmd:MD_Distributor>
+               {% for party in distributor.contact.party %}
+               {% for lookup in contact %}
+               {% if lookup.contactId == party.contactId %}
                <gmd:distributorContact>
                   <gmd:CI_ResponsibleParty>
+                     {% if lookup.isOrganization %}
                      <gmd:organisationName>
-                        <gco:CharacterString>UK Polar Data Centre</gco:CharacterString>
+                        <gco:CharacterString>{{ lookup.name }}</gco:CharacterString>
                      </gmd:organisationName>
+                     {% elif not lookup.isOrganization %}
+                     <gmd:individualName>
+                        <gco:CharacterString>{{ lookup.name }}</gco:CharacterString>
+                     </gmd:individualName>
+                     <gmd:positionName>
+                        <gco:CharacterString>{{ lookup.positionName }}</gco:CharacterString>
+                     </gmd:positionName>
+                     {% endif %}
                      <gmd:contactInfo>
                         <gmd:CI_Contact>
                            <gmd:phone/>
+                           {% for email in lookup.electronicMailAddress %}
                            <gmd:address>
                               <gmd:CI_Address>
                                  <gmd:electronicMailAddress>
-                                    <gco:CharacterString>polardatacentre@bas.ac.uk</gco:CharacterString>
+                                    <gco:CharacterString>{{ email }}</gco:CharacterString>
                                  </gmd:electronicMailAddress>
                               </gmd:CI_Address>
                            </gmd:address>
+                           {% endfor %}
                            <gmd:onlineResource/>
                            <gmd:hoursOfService/>
                            <gmd:contactInstructions/>
                         </gmd:CI_Contact>
                      </gmd:contactInfo>
                      <gmd:role>
-                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="distributor" codeSpace="005"/>
+                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ distributor.contact.role }}" codeSpace="010"/>
                      </gmd:role>
                   </gmd:CI_ResponsibleParty>
                </gmd:distributorContact>
+               {% endif %}
+               {% endfor %}
+               {% endfor %}
                <gmd:distributionOrderProcess/>
+               {% for transferOption in distributor.transferOption %}
+               {% for distributionFormat in transferOption.distributionFormat %}
                <gmd:distributorFormat>
                   <gmd:MD_Format>
                      <gmd:name>
-                        <gco:CharacterString>CSV</gco:CharacterString>
+                        <gco:CharacterString>{{ distributionFormat.formatSpecification.title }}</gco:CharacterString>
                      </gmd:name>
                      <gmd:version>
-                        <gco:CharacterString>1.0</gco:CharacterString>
+                        <gco:CharacterString>{{ distributionFormat.formatSpecification.edition }}</gco:CharacterString>
                      </gmd:version>
                      <gmd:amendmentNumber/>
                      <gmd:fileDecompressionTechnique/>
                   </gmd:MD_Format>
                </gmd:distributorFormat>
+               {% endfor %}
+               {% for onlineOption in transferOption.onlineOption %}
                <gmd:distributorTransferOptions>
                   <gmd:MD_DigitalTransferOptions>
                      <gmd:unitsOfDistribution>
-                        <gco:CharacterString>kB</gco:CharacterString>
+                        <gco:CharacterString>{{ transferOption.unitsOfDistribution }}</gco:CharacterString>
                      </gmd:unitsOfDistribution>
                      <gmd:transferSize>
-                        <gco:Real>52</gco:Real>
+                        <gco:Real>{{ transferOption.transferSize }}</gco:Real>
                      </gmd:transferSize>
                      <gmd:onLine>
                         <gmd:CI_OnlineResource>
                            <gmd:linkage>
-                              <gmd:URL>https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=01f26c07-ea6c-4d89-893e-d86247874e78</gmd:URL>
+                              <gmd:URL>{{ onlineOption.uri }}</gmd:URL>
                            </gmd:linkage>
                            <gmd:protocol>
-                              <gco:CharacterString>HTTP</gco:CharacterString>
+                              <gco:CharacterString>{{ onlineOption.protocol }}</gco:CharacterString>
                            </gmd:protocol>
                            <gmd:applicationProfile/>
                            <gmd:name>
-                              <gco:CharacterString>GET DATA</gco:CharacterString>
+                              <gco:CharacterString>{{ onlineOption.name }}</gco:CharacterString>
                            </gmd:name>
                            <gmd:description/>
                            <gmd:function>
-                              <gmd:CI_OnLineFunctionCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_OnLineFunctionCode" codeListValue="dataUri" codeSpace="adiwg004"/>
+                              <gmd:CI_OnLineFunctionCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_OnLineFunctionCode" codeListValue="{{ onlineOption.function }}" codeSpace="adiwg004"/>
                            </gmd:function>
                         </gmd:CI_OnlineResource>
                      </gmd:onLine>
                      <gmd:offLine/>
                   </gmd:MD_DigitalTransferOptions>
                </gmd:distributorTransferOptions>
+               {% endfor %}
+               {% endfor %}
             </gmd:MD_Distributor>
          </gmd:distributor>
       </gmd:MD_Distribution>
    </gmd:distributionInfo>
+   {% endfor %}
+   {% endfor %}
+   {% for resourceLineage in metadata.resourceLineage %}
    <gmd:dataQualityInfo>
       <gmd:DQ_DataQuality>
          <gmd:scope>
             <gmd:DQ_Scope>
                <gmd:level>
-                  <gmd:MD_ScopeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ScopeCode" codeListValue="tabularDataset" codeSpace="adiwg011"/>
+                  <gmd:MD_ScopeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ScopeCode" codeListValue="{{ resourceLineage.scope.scopeCode }}" codeSpace="adiwg011"/>
                </gmd:level>
                <gmd:extent/>
                <gmd:levelDescription/>
@@ -758,9 +616,7 @@
          <gmd:lineage>
             <gmd:LI_Lineage>
                <gmd:statement>
-                  <gco:CharacterString>Five seismic reflection profiles were acquired. The seismic source was 450 g explosives at 30 m depth. Shot spacing was 240 m, number of channels was 48 and geophone spacing was 10 m, resulting in single-fold data. Data processing included normal moveout correction, and migration. Ice-water and water-bed interface reflections were picked from stacked seismic sections. Depth conversion used a travel-time correction for the upper snow and firn, and standard ice- and water-column velocities. Full details of data acquisition and processing are given in:
-Woodward, J., A. M. Smith, N. Ross, M. Thoma, H. F. J. Corr, E. C. King, M. A. King, K. Grosfeld, M. Tranter, M. J. Siegert, 2010. Location for direct access to subglacial Lake Ellsworth: An assessment of geophysical data and modelling. Geophysical Research Letters, doi:10.1029/2010GL042884.
-Smith, A.M., J. Woodward, N. Ross, M.J. Bentley, D.A. Hodgson, M.J. Siegert, E.C. King, 2018. Evidence for the long-term sedimentary environment in an Antarctic subglacial lake. Earth and Planetary Science Letters, doi:10.1016/j.epsl.2018.10.011.</gco:CharacterString>
+                  <gco:CharacterString>{{ resourceLineage.statement }}</gco:CharacterString>
                </gmd:statement>
                <gmd:processStep/>
                <gmd:source/>
@@ -768,6 +624,6 @@ Smith, A.M., J. Woodward, N. Ross, M.J. Bentley, D.A. Hodgson, M.J. Siegert, E.C
          </gmd:lineage>
       </gmd:DQ_DataQuality>
    </gmd:dataQualityInfo>
+   {% endfor %}
    <gmd:metadataMaintenance/>
 </gmi:MI_Metadata>
-

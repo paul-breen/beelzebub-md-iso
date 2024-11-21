@@ -6,17 +6,18 @@
    </gmd:fileIdentifier>
    <gmd:language>
       <gco:CharacterString>{{ metadata.metadataInfo.defaultMetadataLocale.language }}; {{ metadata.metadataInfo.defaultMetadataLocale.country }}</gco:CharacterString>
+      <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="{{ metadata.metadataInfo.defaultMetadataLocale.language }}">{{ metadata.metadataInfo.defaultMetadataLocale.language }}</gmd:LanguageCode>
    </gmd:language>
    <gmd:characterSet>
-      <gmd:MD_CharacterSetCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_CharacterSetCode" codeListValue="{{ metadata.metadataInfo.defaultMetadataLocale.characterSet }}" codeSpace="106"/>
+      <gmd:MD_CharacterSetCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_CharacterSetCode" codeListValue="{{ metadata.metadataInfo.defaultMetadataLocale.characterSet }}" codeSpace="106">{{ metadata.metadataInfo.defaultMetadataLocale.characterSet }}</gmd:MD_CharacterSetCode>
    </gmd:characterSet>
    <gmd:parentIdentifier/>
    {% for resourceType in metadata.resourceInfo.resourceType %}
    <gmd:hierarchyLevel>
-      <gmd:MD_ScopeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ScopeCode" codeListValue="{{ resourceType.type }}" codeSpace="005"/>
+      <gmd:MD_ScopeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ScopeCode" codeListValue="{{ resourceType.type }}" codeSpace="005">{{ resourceType.type }}</gmd:MD_ScopeCode>
    </gmd:hierarchyLevel>
    <gmd:hierarchyLevelName>
-      <gco:CharacterString>{{ resourceType.name }}</gco:CharacterString>
+      <gco:CharacterString>{{ resourceType.type }}</gco:CharacterString>
    </gmd:hierarchyLevelName>
    {% endfor %}
    {% for metadataContact in metadata.metadataInfo.metadataContact %}
@@ -55,7 +56,7 @@
             </gmd:CI_Contact>
          </gmd:contactInfo>
          <gmd:role>
-            <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ metadataContact.role }}" codeSpace="011"/>
+            <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ metadataContact.role }}" codeSpace="011">{{ metadataContact.role }}</gmd:CI_RoleCode>
          </gmd:role>
       </gmd:CI_ResponsibleParty>
    </gmd:contact>
@@ -63,11 +64,11 @@
    {% endfor %}
    {% endfor %}
    {% endfor %}
-   {% for date in metadata.resourceInfo.citation.date %}
+   {% if metadata.resourceInfo.citation.date %}
    <gmd:dateStamp>
-      <gco:DateTime>{{ date.date }}</gco:DateTime>
+      <gco:Date>{{ metadata.resourceInfo.citation.date[0].date }}</gco:Date>
    </gmd:dateStamp>
-   {% endfor %}
+   {% endif %}
    <gmd:metadataStandardName>
       <gco:CharacterString>ISO 19139</gco:CharacterString>
    </gmd:metadataStandardName>
@@ -120,10 +121,10 @@
                <gmd:date>
                   <gmd:CI_Date>
                      <gmd:date>
-                        <gco:DateTime>{{ date.date }}</gco:DateTime>
+                        <gco:Date>{{ date.date }}</gco:Date>
                      </gmd:date>
                      <gmd:dateType>
-                        <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="002"/>
+                        <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="002">{{ date.dateType }}</gmd:CI_DateTypeCode>
                      </gmd:dateType>
                   </gmd:CI_Date>
                </gmd:date>
@@ -177,7 +178,7 @@
                         </gmd:CI_Contact>
                      </gmd:contactInfo>
                      <gmd:role>
-                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ responsibleParty.role }}" codeSpace="010"/>
+                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ responsibleParty.role }}" codeSpace="010">{{ responsibleParty.role }}</gmd:CI_RoleCode>
                      </gmd:role>
                   </gmd:CI_ResponsibleParty>
                </gmd:citedResponsibleParty>
@@ -242,7 +243,7 @@
                   </gmd:CI_Contact>
                </gmd:contactInfo>
                <gmd:role>
-                  <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ pointOfContact.role }}" codeSpace="007"/>
+                  <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ pointOfContact.role }}" codeSpace="007">{{ pointOfContact.role }}</gmd:CI_RoleCode>
                </gmd:role>
             </gmd:CI_ResponsibleParty>
          </gmd:pointOfContact>
@@ -277,7 +278,7 @@
                               <gco:Date>{{ date.date }}</gco:Date>
                            </gmd:date>
                            <gmd:dateType>
-                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="003"/>
+                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="003">{{ date.dateType }}</gmd:CI_DateTypeCode>
                            </gmd:dateType>
                         </gmd:CI_Date>
                      </gmd:date>
@@ -336,7 +337,7 @@
                               <gco:Date>{{ date.date }}</gco:Date>
                            </gmd:date>
                            <gmd:dateType>
-                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="002"/>
+                              <gmd:CI_DateTypeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_DateTypeCode" codeListValue="{{ date.dateType }}" codeSpace="002">{{ date.dateType }}</gmd:CI_DateTypeCode>
                            </gmd:dateType>
                         </gmd:CI_Date>
                      </gmd:date>
@@ -390,7 +391,7 @@
                               </gmd:CI_Contact>
                            </gmd:contactInfo>
                            <gmd:role>
-                              <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ responsibleParty.role }}" codeSpace="010"/>
+                              <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ responsibleParty.role }}" codeSpace="010">{{ responsibleParty.role }}</gmd:CI_RoleCode>
                            </gmd:role>
                         </gmd:CI_ResponsibleParty>
                      </gmd:citedResponsibleParty>
@@ -445,6 +446,7 @@
          </gmd:environmentDescription>
          {% for extent in metadata.resourceInfo.extent %}
          <gmd:extent>
+            {# <gmd:EX_Extent id="bounding"> #}
             <gmd:EX_Extent>
                <gmd:description>
                   <gco:CharacterString>{{ extent.description }}</gco:CharacterString>
@@ -470,31 +472,36 @@
                   </gmd:EX_GeographicBoundingBox>
                </gmd:geographicElement>
                {% endfor %}
-               <gmd:temporalElement/>
-               <gmd:verticalElement/>
-            </gmd:EX_Extent>
-         </gmd:extent>
-         {% endfor %}
-         <gmd:extent>
-            <gmd:EX_Extent>
-               <gmd:description/>
-               <gmd:geographicElement/>
+               {% for temporalExtent in extent.temporalExtent %}
                <gmd:temporalElement>
                   <gmd:EX_TemporalExtent>
                      <gmd:extent>
-                        <gml:TimePeriod gml:id="timePeriod_001">
+                        <gml:TimePeriod gml:id="timePeriod_{{loop.index}}">
                            <gml:description/>
                            <gml:identifier codeSpace=""/>
                            <gml:name/>
-                           <gml:beginPosition>{{ metadata.resourceInfo.timePeriod.startDateTime }}</gml:beginPosition>
-                           <gml:endPosition>{{ metadata.resourceInfo.timePeriod.endDateTime }}</gml:endPosition>
+                           <gml:beginPosition>{{ temporalExtent.startDateTime }}</gml:beginPosition>
+                           <gml:endPosition>{{ temporalExtent.endDateTime }}</gml:endPosition>
                         </gml:TimePeriod>
                      </gmd:extent>
                   </gmd:EX_TemporalExtent>
                </gmd:temporalElement>
-               <gmd:verticalElement/>
+               {% endfor %}
+               {% for verticalExtent in extent.verticalExtent %}
+               <gmd:verticalElement>
+                  <gmd:EX_VerticalExtent>
+                     <gmd:minimumValue>
+                        <gco:Real>{{ verticalExtent.minValue }}</gco:Real>
+                     </gmd:minimumValue>
+                     <gmd:maximumValue>
+                        <gco:Real>{{ verticalExtent.maxValue }}</gco:Real>
+                     </gmd:maximumValue>
+                  </gmd:EX_VerticalExtent>
+               </gmd:verticalElement>
+               {% endfor %}
             </gmd:EX_Extent>
          </gmd:extent>
+         {% endfor %}
          <gmd:supplementalInformation/>
       </gmd:MD_DataIdentification>
    </gmd:identificationInfo>
@@ -540,7 +547,7 @@
                         </gmd:CI_Contact>
                      </gmd:contactInfo>
                      <gmd:role>
-                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ distributor.contact.role }}" codeSpace="010"/>
+                        <gmd:CI_RoleCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#CI_RoleCode" codeListValue="{{ distributor.contact.role }}" codeSpace="010">{{ distributor.contact.role }}</gmd:CI_RoleCode>
                      </gmd:role>
                   </gmd:CI_ResponsibleParty>
                </gmd:distributorContact>
@@ -607,7 +614,11 @@
          <gmd:scope>
             <gmd:DQ_Scope>
                <gmd:level>
-                  <gmd:MD_ScopeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ScopeCode" codeListValue="{{ resourceLineage.scope.scopeCode }}" codeSpace="adiwg011"/>
+                  {% if metadata.resourceInfo.resourceType %}
+                  <gmd:MD_ScopeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ScopeCode" codeListValue="{{ metadata.resourceInfo.resourceType[0].type }}" codeSpace="adiwg011">{{ metadata.resourceInfo.resourceType[0].type }}</gmd:MD_ScopeCode>
+                  {% else %}
+                  <gmd:MD_ScopeCode codeList="http://mdtranslator.adiwg.org/api/codelists?format=xml#MD_ScopeCode" codeListValue="dataset" codeSpace="adiwg011">dataset</gmd:MD_ScopeCode>
+                  {% endif %}
                </gmd:level>
                <gmd:extent/>
                <gmd:levelDescription/>

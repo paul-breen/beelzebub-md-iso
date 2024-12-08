@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "beelzebub-md-iso"
-version = "0.1.1"
+version = "0.2.0"
 description = "Translate between mdJson and ISO19115-2"
 authors = ["Paul Breen <paul.breen6@btinternet.com>"]
 readme = "README.md"

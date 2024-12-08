@@ -12,6 +12,9 @@ packages = [
   {include = "beelzebub/md_iso"}
 ]
 
+[tool.poetry.scripts]
+beelzebub_md_iso = "beelzebub.md_iso.__main__:main"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 beelzebub = "^1.0.0"
